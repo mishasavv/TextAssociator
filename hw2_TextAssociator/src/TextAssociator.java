@@ -10,8 +10,11 @@ import java.util.Set;
  * 
  */
 public class TextAssociator {
-	private WordInfoSeparateChain[] table;
-	private int size;
+	// PRIVATE
+	public WordInfoSeparateChain[] table;
+	public int size;
+	public int[] primes;
+	public int primeLevel;
 	
 	/* INNER CLASS
 	 * Represents a separate chain in your implementation of your hashing
@@ -69,7 +72,10 @@ public class TextAssociator {
 	/* Creates a new TextAssociator without any associations 
 	 */
 	public TextAssociator() {
-		//TODO: Implement as explained in spec
+		primes = new int[] {23, 53, 101, 211, 401, 809, 1601, 3203, 6007, 12007, 24001, 48017, 100003, 200003, 400009, 800011};
+		primeLevel = 0;
+		table = new WordInfoSeparateChain[primes[0]];
+		size = 0;
 	}
 	
 	
@@ -78,8 +84,11 @@ public class TextAssociator {
 	 * Returns True if this word is successfully added
 	 */
 	public boolean addNewWord(String word) {
+		
+		if( (double)(size + 1 / table.length) > .75) {
+			resize();
+		}
 		return false;
-		//TODO: Implement as explained in spec
 	}
 	
 	
@@ -132,4 +141,19 @@ public class TextAssociator {
 		}
 		System.out.println();
 	}
+	
+	private void resize() {
+		WordInfoSeparateChain[] resizedArray;
+	}
+	
+//	private int hashString(String s) {
+//		return s.hashCode();
+//	}
+	
+	// MAKE SURE TO MAKE PRIVATE
+	public int locateArrayPosition(String s) {
+		int hash = s.hashCode();
+		return (hash % table.length);
+	}
+	
 }
