@@ -84,11 +84,21 @@ public class TextAssociator {
 	 * Returns True if this word is successfully added
 	 */
 	public boolean addNewWord(String word) {
-		
-		if( (double)(size + 1 / table.length) > .75) {
+		// First, check to see if table needs to be resized
+		if( (double)(size / table.length) > .75) {
 			resize();
 		}
-		return false;
+		int arrayPosition = locateArrayPosition(word);
+		WordInfo newWordInfo = new WordInfo(word);
+		if (table[arrayPosition] == null) {
+			WordInfoSeparateChain newWordInfoSeparateChain = new WordInfoSeparateChain();
+			table[arrayPosition] = newWordInfoSeparateChain;
+			return table[arrayPosition].add(newWordInfo);
+		} else if(!isContainedInChain(word,arrayPosition)) {
+			return table[arrayPosition].add(newWordInfo);
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -98,7 +108,11 @@ public class TextAssociator {
 	 */
 	public boolean addAssociation(String word, String association) {
 		return false;
-		//TODO: Implement as explained in spec
+		int arrayPosition = locateArrayPosition(word);
+		// not finished
+		if (table[arrayPosition] != null && isContainedInChain(word, arrayPosition)) {
+			
+		}
 	}
 	
 	
@@ -143,7 +157,8 @@ public class TextAssociator {
 	}
 	
 	private void resize() {
-		WordInfoSeparateChain[] resizedArray;
+		primeLevel++;
+		WordInfoSeparateChain[] resizedArray = new WordInfoSeparateChain[primes[primeLevel]];
 	}
 	
 //	private int hashString(String s) {
@@ -152,8 +167,21 @@ public class TextAssociator {
 	
 	// MAKE SURE TO MAKE PRIVATE
 	public int locateArrayPosition(String s) {
-		int hash = s.hashCode();
+		// Use Math.abs so we only get positive hashes (and will therefor work as array values)
+		int hash = Math.abs(s.hashCode());
 		return (hash % table.length);
 	}
+	
+	private boolean isContainedInChain(String s, int index) {
+		List<WordInfo> wordInfoObjects =  table[index].getElements();
+		for(int i = 0; i < wordInfoObjects.size(); i++) {
+			if(wordInfoObjects.get(i).getWord() == s) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private WordInfo
 	
 }
