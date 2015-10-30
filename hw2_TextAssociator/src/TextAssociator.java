@@ -85,7 +85,7 @@ public class TextAssociator {
 	 */
 	public boolean addNewWord(String word) {
 		// First, check to see if table needs to be resized
-		if( (double)(size / table.length) > .75) {
+		if( (double)(size / table.length) >= .75) {
 			resize();
 		}
 		int arrayPosition = locateArrayPosition(word);
@@ -93,8 +93,10 @@ public class TextAssociator {
 		if (table[arrayPosition] == null) {
 			WordInfoSeparateChain newWordInfoSeparateChain = new WordInfoSeparateChain();
 			table[arrayPosition] = newWordInfoSeparateChain;
+			size++;
 			return table[arrayPosition].add(newWordInfo);
 		} else if(!isContainedInChain(word,arrayPosition)) {
+			size++;
 			return table[arrayPosition].add(newWordInfo);
 		} else {
 			return false;
@@ -107,12 +109,12 @@ public class TextAssociator {
 	 * the association between the two words already exists
 	 */
 	public boolean addAssociation(String word, String association) {
-		return false;
 		int arrayPosition = locateArrayPosition(word);
-		// not finished
 		if (table[arrayPosition] != null && isContainedInChain(word, arrayPosition)) {
-			
+			WordInfo associationWordInfo = getWordInfo(word, arrayPosition);
+			return associationWordInfo.addAssociation(association);
 		}
+		return false;
 	}
 	
 	
@@ -121,8 +123,13 @@ public class TextAssociator {
 	 * Note that only a source word can be removed by this method, not an association.
 	 */
 	public boolean remove(String word) {
+		int arrayPosition = locateArrayPosition(word);
+		if (table[arrayPosition] != null && isContainedInChain(word, arrayPosition)) {
+			WordInfo associationWordInfo = getWordInfo(word, arrayPosition);
+			size--;
+			return table[arrayPosition].remove(associationWordInfo);
+		}
 		return false;
-		//TODO: Implement as explained in spec
 	}
 	
 	
@@ -130,8 +137,12 @@ public class TextAssociator {
 	 * Returns null if the given String does not exist in the TextAssociator
 	 */
 	public Set<String> getAssociations(String word) {
+		int arrayPosition = locateArrayPosition(word);
+		if (table[arrayPosition] != null && isContainedInChain(word, arrayPosition)) {
+			WordInfo associationWordInfo = getWordInfo(word, arrayPosition);
+			return associationWordInfo.getAssociations();
+		}
 		return null;
-		//TODO: Implement as explained in spec
 	}
 	
 	
@@ -182,6 +193,14 @@ public class TextAssociator {
 		return false;
 	}
 	
-	private WordInfo
+	private WordInfo getWordInfo(String s, int index) {
+		List<WordInfo> wordInfoObjects = table[index].getElements();
+		for(int i = 0; i < wordInfoObjects.size(); i++) {
+			if(wordInfoObjects.get(i).getWord() == s) {
+				return wordInfoObjects.get(i);
+			}
+		}
+		return null;
+	}
 	
 }
