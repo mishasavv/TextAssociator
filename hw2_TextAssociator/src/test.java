@@ -10,6 +10,7 @@ public class test {
 		System.out.println(textAssociator.addAssociation("elephant","large"));
 		System.out.println(textAssociator.addAssociation("elephant","large"));
 		System.out.println(textAssociator.addAssociation("elephant","big"));
+		System.out.println(textAssociator.getAssociations("elephant"));		
 		System.out.println(textAssociator.remove("elephant"));
 		System.out.println(textAssociator.remove("elephant"));
 		System.out.println(textAssociator.getAssociations("elephant"));

@@ -29,7 +29,7 @@ public class ThesuarusClient {
 		TextAssociator sc = new TextAssociator();
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String text = null;
-		
+		long start = System.currentTimeMillis();
 		while ((text = reader.readLine()) != null) {
 			String[] words = text.split(",");
 			String currWord = words[0].trim();
@@ -39,6 +39,8 @@ public class ThesuarusClient {
 				sc.addAssociation(currWord, words[i].trim());
 			}
 		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - start);
 		Scanner scan= new Scanner(System.in);
 		String inputString = "";
 		Random rand = new Random();

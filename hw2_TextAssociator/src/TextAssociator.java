@@ -167,37 +167,62 @@ public class TextAssociator {
 		System.out.println();
 	}
 	
+	/* Helper method that nearly doubles the size of the table
+	 * and inputs the WordInfo objects again
+	 */
 	private void resize() {
+		WordInfoSeparateChain[] originalTable = table;
 		primeLevel++;
-		WordInfoSeparateChain[] resizedArray = new WordInfoSeparateChain[primes[primeLevel]];
+		table = new WordInfoSeparateChain[primes[primeLevel]];
+		//Iterate through all locations in the original table
+		for(int i = 0; i < originalTable.length; i++) {
+			if(originalTable[i] != null) {
+				WordInfoSeparateChain bucket = originalTable[i];
+				
+				for(WordInfo curr : bucket.getElements()) {
+					int index = locateArrayPosition(curr.getWord());
+					if (table[index] == null) {
+						WordInfoSeparateChain newWordInfoSeparateChain = new WordInfoSeparateChain();
+						table[index] = newWordInfoSeparateChain;
+					} 
+					table[index].add(curr);
+				}
+			}
+		}
 	}
 	
-//	private int hashString(String s) {
-//		return s.hashCode();
-//	}
-	
-	// MAKE SURE TO MAKE PRIVATE
+	/* Helper method that returns the position the string should
+	 * be in the table
+	 */
 	public int locateArrayPosition(String s) {
-		// Use Math.abs so we only get positive hashes (and will therefor work as array values)
+		// Use Math.abs so we only get positive hashes (and will therefore work as array values)
 		int hash = Math.abs(s.hashCode());
 		return (hash % table.length);
 	}
 	
+	/* Helper method that checks if the word passed is the same as
+	 * a WordInfo object in the WordInfoSeparateChain at the given
+	 * index. Returns true if it is, else it returns false  
+	 */
 	private boolean isContainedInChain(String s, int index) {
 		List<WordInfo> wordInfoObjects =  table[index].getElements();
-		for(int i = 0; i < wordInfoObjects.size(); i++) {
-			if(wordInfoObjects.get(i).getWord() == s) {
+		for(WordInfo curr: wordInfoObjects) {
+			if(curr.getWord().equals(s)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	/* Helper method that checks if the word passed is the same as
+	 * a WordInfo object in the WordInfoSeparateChain at the given
+	 * index. Returns the WordInfo object if it is, else it returns null  
+	 */
 	private WordInfo getWordInfo(String s, int index) {
-		List<WordInfo> wordInfoObjects = table[index].getElements();
-		for(int i = 0; i < wordInfoObjects.size(); i++) {
-			if(wordInfoObjects.get(i).getWord() == s) {
-				return wordInfoObjects.get(i);
+		List<WordInfo> wordInfoObjects =  table[index].getElements();
+		for(WordInfo curr: wordInfoObjects) {
+			if(curr.getWord().equals(s)) {
+				return curr;
 			}
 		}
 		return null;
